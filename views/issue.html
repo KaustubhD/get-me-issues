@@ -97,7 +97,9 @@
             type: "DELETE",
             url: url,
             data: {_id: $(this).attr('id')},
-            success: function(data) { alert(data); window.location.reload(true); }
+            success: function(data) { alert(data);
+                                     window.location.reload(true);
+                                    }
           });
           e.preventDefault();
         });

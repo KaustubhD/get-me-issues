@@ -5,6 +5,8 @@
 
 body {
   padding: 10px;
+  background-color: #444;
+  color: #efefef;
 }
 
 .issue {
