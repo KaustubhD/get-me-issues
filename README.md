@@ -11,6 +11,22 @@ On the back-end,
 - safely store app secrets in `.env` (nobody can see this but you and people you invite)
 
 
+Directions to use
+-------------------
+1. Website
+    * **Note**:  All issues on the page are related to project ```apitest```
+    * Fill the forms to submit, edit or delete an issue
+    * Go to ```/api/issues/apitest``` to see all the issues
+
+2. API
+    * Request URL: ```/api/issues/{projectname}```
+    * To submit issue: **POST** request to project URL
+    * To get issue(s): **GET** request to project URL
+    * To update issue(s): **PUT** request to project URL
+    * To delete issue: **DELETE** request to project URL
+
+
+
 Objectives
 -------------------
 - [x] Prevent cross site scripting(XSS attack).
@@ -19,8 +35,8 @@ Objectives
 - [x] I can PUT /api/issues/{projectname} with a _id and any fields in the object with a value to object said object. Returned will be 'successfully updated' or 'could not update '+_id. This should always update updated_on. If no fields are sent return 'no updated field sent'.
 - [x] I can DELETE /api/issues/{projectname} with a _id to completely delete an issue. If no _id is sent return '_id error', success: 'deleted '+_id, failed: 'could not delete '+_id.
 - [x] I can GET /api/issues/{projectname} for an array of all issues on that specific project with all the information for each issue as was returned when posted.
-- [ ] I can filter my get request by also passing along any field and value in the query(ie. /api/issues/{project}?open=false). I can pass along as many fields/values as I want.
-- [ ] All 11 functional tests are complete and passing
+- [x] I can filter my get request by also passing along any field and value in the query(ie. /api/issues/{project}?open=false). I can pass along as many fields/values as I want.
+- [x] All 11 functional tests are complete and passing
 
 
 Testing

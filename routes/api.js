@@ -56,11 +56,10 @@ module.exports = function (app) {
       var project = req.params.project
       var newDoc = req.body
       var _id = newDoc._id
-      if(!_id) res.status(400).send('No issue ID supplied')
+      if(!_id) res.status(400).json({err: 'No issue ID supplied'})
       delete newDoc._id
       
       for(var key in newDoc) if(newDoc[key] == undefined) delete newDoc[key]
-      console.log('Got newDoc', newDoc)
       if(Object.keys(newDoc).length == 0) res.json({message: 'no updated field sent'})
       else{
         newDoc.updated_on = new Date().toISOString()
@@ -68,7 +67,6 @@ module.exports = function (app) {
           db.collection(project)
           .updateOne({_id: new ObjectId(_id)}, {$set: newDoc}, {new: true})
           .then(doc => {
-            // console.log(doc)
             return res.json({message: 'successfully updated'})
           })
           .catch(err => res.json({message: 'could not update ' + _id})) 

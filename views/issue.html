@@ -1,109 +1,112 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Welcome to HyperDev!</title>
+    <title>We got Issues!</title>
     <meta name="description" content="A cool thing made with HyperDev">
-    <link id="favicon" rel="icon" href="https://hyperdev.com/favicon-app.ico" type="image/x-icon">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/public/style.css">
+    <link href="/public/style.css" rel="stylesheet">
   </head>
   <body>
-    <header>
-      <h1 id='projectTitle'></h1>
-    </header>
-    <center>
-      <div id='submitNewIssue'>
-        <br>
-        <h3>Submit a new issue:</h3>
+    <h1 id="projectTitle"></h1>  
+    <main class="center-contain">
+      
+      <div id="submitNewIssue">
         <form id="newIssue" method="post" action="/api/">
-          <input type="text" name="issue_title" placeholder="*Title" style="width: 320px; margin-bottom: 3px;" required=''><br>
-          <textarea type="text" name="issue_text" placeholder="*Text" style="width: 320px; height: 100px;" required=''></textarea><br>
-          <input type="text" name="created_by" placeholder="*Created by" style="width: 100px" required=''>
-          <input type="text" name="assigned_to" placeholder="(opt)Assigned to" style="width: 100px">
-          <input type="text" name="status_text" placeholder="(opt)Status text" style="width: 100px"><br>
+          <p class="bold">
+            Submit a new issue
+          </p>
+          <input type="text" name="issue_title" placeholder="* Issue title" required>
+          <textarea type="text" name="issue_text" placeholder="* Issue text" required></textarea>
+          <input type="text" name="created_by" placeholder="* Created by" required>
+          <input type="text" name="assigned_to" placeholder="Assigned to">
+          <input type="text" name="status_text" placeholder="Status text">
           <button type="submit">Submit Issue</button>
         </form>
       </div>
       
-      <div id='issueDisplay'></div>
-      
-      <hr style='margin: 50px; margin-top: 200px'>
-    </center>
+      <div id="issueDisplay"></div>
     
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
-            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
-            crossorigin="anonymous"></script>
-    <script>
-      $(function() {
-        var currentProject = window.location.pathname.replace(/\//g, "");;
-        var url = "/api/issues/"+currentProject;
-        $('#projectTitle').text('All issues for: '+currentProject)
-        $.ajax({
-          type: "GET",
-          url: url,
-          success: function(data)
-          {
-            var issues= [];
-            data.forEach(function(ele) {
-              console.log(ele);
-              var openstatus;
-              (ele.open) ? openstatus = 'open' : openstatus = 'closed';
-              var single = [
-                '<div class="issue '+openstatus+'">',
-                '<p class="id">id: '+ele._id+'</p>',
-                '<h3>'+ele.issue_title+' -  ('+openstatus+')</h3>',
-                '<br>',
-                '<p>'+ele.issue_text+'</p>',
-                '<p>'+ele.status_text+'</p>',
-                '<br>',
-                '<p class="id"><b>Created by:</b> '+ele.created_by+'  <b>Assigned to:</b> '+ele.assigned_to,
-                '<p class="id"><b>Created on:</b> '+ele.created_on+'  <b>Last updated:</b> '+ele.updated_on,
-                '<br><a href="#" class="closeIssue" id="'+ele._id+'">close?</a> <a href="#" class="deleteIssue" id="'+ele._id+'">delete?</a>',
-                '</div>'
-                
-              ];
-              issues.push(single.join(''));
-            });
-            $('#issueDisplay').html(issues.join(''));
-          }
-        });
-        
-        $('#newIssue').submit(function(e){
-          e.preventDefault();
-          $(this).attr('action', "/api/issues/" + currentProject);
-          $.ajax({
-            type: "POST",
-            url: url,
-            data: $(this).serialize(),
-            success: function(data) { window.location.reload(true); }
-          });
-        });
-        
-        $('#issueDisplay').on('click','.closeIssue', function(e) {
-          var url = "/api/issues/"+currentProject;
-          $.ajax({
-            type: "PUT",
-            url: url,
-            data: {_id: $(this).attr('id'), open: false},
-            success: function(data) { alert(data); window.location.reload(true); }
-          });
-          e.preventDefault();
-        });
-        $('#issueDisplay').on('click','.deleteIssue', function(e) {
-          var url = "/api/issues/"+currentProject;
-          $.ajax({
-            type: "DELETE",
-            url: url,
-            data: {_id: $(this).attr('id')},
-            success: function(data) { alert(data);
-                                     window.location.reload(true);
-                                    }
-          });
-          e.preventDefault();
-        });
-      });
-   </script>
+    </main>
+    <hr style="margin: 50px">
   </body>
+   <script>
+
+        var currentProject = window.location.pathname.replace(/\//g, "")
+        var url = "/api/issues/"+currentProject
+        document.getElementById('projectTitle').textContent = 'All issues for: ' + currentProject
+        
+        fetch(url)
+          .then(resp => resp.json())
+          .then(data => {
+          
+            console.log(data)
+
+            var issues= []
+            data.forEach(function(ele) {
+              var openstatus
+              (ele.open) ? openstatus = 'open' : openstatus = 'closed'
+              var single = [`
+                <div class="issue ${openstatus}">
+                  <p class="id">id: ${ele._id}</p>
+                  <h2>${ele.issue_title}  <span class="status">(${openstatus})</span></h2>
+                  <p>${ele.issue_text}</p>
+                  <p>${ele.status_text}</p>
+                  <p class="id"><b>Created by:</b> ${ele.created_by}  <b>Assigned to:</b> ${ele.assigned_to}</p>
+                  <p class="id"><b>Created on:</b> ${ele.created_on}  <b>Last updated:</b> ${ele.updated_on}</p>
+                  <a href="#" class="closeIssue" id="${ele._id}" onclick="closeIssue(this)">${ele.open ? 'Close' : 'Open'} ?</a> <a href="#" class="deleteIssue(this)" id="${ele._id}" onclick="deleteissue">Delete ?</a>
+                </div>`
+              ]
+              issues.push(single.join(''))
+            })
+            document.getElementById('issueDisplay').innerHTML = issues.join('')
+          })
+        
+        document.getElementById('newIssue').addEventListener('submit', function(e){
+          e.preventDefault()
+          this.setAttribute('action', "/api/issues/" + currentProject)
+          fetch(url, {
+            method: "POST",
+            body: new URLSearchParams(new FormData(this))
+          })
+          .then(resp => resp.json())
+          .then(data => {
+            window.location.reload(true)
+          })
+        })
+        
+        function closeIssue(e) {
+          var url = "/api/issues/" + currentProject
+          fetch(url, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({_id: e.getAttribute('id'), open: e.textContent[0] == 'O'})
+          })
+          .then(resp => resp.json())
+          .then(data => {
+            console.log('Got something')
+            alert(data.message)
+            window.location.reload(true)
+          })
+          .catch(err => console.error('Something, ', err))
+        }
+
+        function deleteIssue(e) {
+          var url = "/api/issues/" + currentProject
+          fetch(url, {
+            method: "DELETE",
+            body: JSON.stringify({_id: e.getAttribute('id')})
+          })
+          .then(resp => resp.json())
+          .then(data => {
+            alert(data.message)
+            window.location.reload(true)
+          })
+        }
+   </script>
+  
 </html>
