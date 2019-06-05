@@ -12,9 +12,12 @@ module.exports = function (app) {
   
     .get(function (req, res){
       var project = req.params.project
+      var searchQuery = req.query
+      if(searchQuery._id) searchQuery._id = new ObjectId(searchQuery._id)
+      if(searchQuery.open) searchQuery.open = String(searchQuery.open) == "true"
       MongoClient.connect(CONNECTION_STRING, function(err, db) {
         db.collection(project)
-          .find({})
+          .find(searchQuery)
           .toArray()
           .then(docs => res.json(docs))
           .catch(err => console.error(err))
@@ -56,16 +59,19 @@ module.exports = function (app) {
       if(!_id) res.status(400).send('No issue ID supplied')
       delete newDoc._id
       
-      for(var key in newDoc) if(!newDoc[key]) delete newDoc[key]
-      
-      if(newDoc.length == 0) res.send('no updated field sent')
+      for(var key in newDoc) if(newDoc[key] == undefined) delete newDoc[key]
+      console.log('Got newDoc', newDoc)
+      if(Object.keys(newDoc).length == 0) res.json({message: 'no updated field sent'})
       else{
         newDoc.updated_on = new Date().toISOString()
         MongoClient.connect(CONNECTION_STRING, function(err, db) {
           db.collection(project)
           .updateOne({_id: new ObjectId(_id)}, {$set: newDoc}, {new: true})
-          .then(doc => res.send('successfully updated'))
-          .catch(err => res.status(400).send('could not update', _id)) 
+          .then(doc => {
+            // console.log(doc)
+            return res.json({message: 'successfully updated'})
+          })
+          .catch(err => res.json({message: 'could not update ' + _id})) 
         })
       }
     })
@@ -73,13 +79,13 @@ module.exports = function (app) {
     .delete(function (req, res){
       var project = req.params.project
       var _id = req.body._id
-      if(!_id) res.status(400).send(_id + 'error')
-      
-      MongoClient.connect(CONNECTION_STRING, function(err, db) {
-        db.collection(project)
-        .deleteOne({_id: new ObjectId(_id)})
-        .then(obj => res.send('deleted ' + _id))
-        .catch(err => res.send('could not delete ' + _id))
-      })
+      if(!_id) res.status(400).json({err: '_id error'})
+      else
+        MongoClient.connect(CONNECTION_STRING, function(err, db) {
+          db.collection(project)
+          .deleteOne({_id: new ObjectId(_id)})
+          .then(obj => res.json({message: 'deleted ' + _id}))
+          .catch(err => res.json({message: 'could not delete ' + _id}))
+        })
     })   
 }
