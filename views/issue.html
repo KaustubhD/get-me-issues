@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>We got Issues!</title>
+    <meta name="description" content="A cool thing made with HyperDev">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/public/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <h1 id="projectTitle"></h1>  
+    <main class="center-contain">
+      
+      <div id="submitNewIssue">
+        <form id="newIssue" method="post" action="/api/">
+          <p class="bold">
+            Submit a new issue
+          </p>
+          <input type="text" name="issue_title" placeholder="* Issue title" required>
+          <textarea type="text" name="issue_text" placeholder="* Issue text" required></textarea>
+          <input type="text" name="created_by" placeholder="* Created by" required>
+          <input type="text" name="assigned_to" placeholder="Assigned to">
+          <input type="text" name="status_text" placeholder="Status text">
+          <button type="submit">Submit Issue</button>
+        </form>
+      </div>
+      
+      <div id="issueDisplay"></div>
+    
+    </main>
+    <hr style="margin: 50px">
+  </body>
+   <script>
+
+        var currentProject = window.location.pathname.replace(/\//g, "")
+        var url = "/api/issues/"+currentProject
+        document.getElementById('projectTitle').textContent = 'All issues for: ' + currentProject
+        
+        fetch(url)
+          .then(resp => resp.json())
+          .then(data => {
+          
+            console.log(data)
+
+            var issues= []
+            data.forEach(function(ele) {
+              var openstatus
+              (ele.open) ? openstatus = 'open' : openstatus = 'closed'
+              var single = [`
+                <div class="issue ${openstatus}">
+                  <p class="id">id: ${ele._id}</p>
+                  <h2>${ele.issue_title}  <span class="status">(${openstatus})</span></h2>
+                  <p>${ele.issue_text}</p>
+                  <p>${ele.status_text}</p>
+                  <p class="id"><b>Created by:</b> ${ele.created_by}  <b>Assigned to:</b> ${ele.assigned_to}</p>
+                  <p class="id"><b>Created on:</b> ${ele.created_on}  <b>Last updated:</b> ${ele.updated_on}</p>
+                  <a href="#" class="closeIssue" id="${ele._id}" onclick="closeIssue(this)">${ele.open ? 'Close' : 'Open'} ?</a> <a href="#" class="deleteIssue(this)" id="${ele._id}" onclick="deleteissue">Delete ?</a>
+                </div>`
+              ]
+              issues.push(single.join(''))
+            })
+            document.getElementById('issueDisplay').innerHTML = issues.join('')
+          })
+        
+        document.getElementById('newIssue').addEventListener('submit', function(e){
+          e.preventDefault()
+          this.setAttribute('action', "/api/issues/" + currentProject)
+          fetch(url, {
+            method: "POST",
+            body: new URLSearchParams(new FormData(this))
+          })
+          .then(resp => resp.json())
+          .then(data => {
+            window.location.reload(true)
+          })
+        })
+        
+        function closeIssue(e) {
+          var url = "/api/issues/" + currentProject
+          fetch(url, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({_id: e.getAttribute('id'), open: e.textContent[0] == 'O'})
+          })
+          .then(resp => resp.json())
+          .then(data => {
+            console.log('Got something')
+            alert(data.message)
+            window.location.reload(true)
+          })
+          .catch(err => console.error('Something, ', err))
+        }
+
+        function deleteIssue(e) {
+          var url = "/api/issues/" + currentProject
+          fetch(url, {
+            method: "DELETE",
+            body: JSON.stringify({_id: e.getAttribute('id')})
+          })
+          .then(resp => resp.json())
+          .then(data => {
+            alert(data.message)
+            window.location.reload(true)
+          })
+        }
+   </script>
+  
+</html>

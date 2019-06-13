@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>We got Issues!</title>
+    <meta name="description" content="A cool thing made with HyperDev">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/public/style.css" rel="stylesheet">
+  </head>
+  <body>
+      <h1>
+        Issue Tracker
+      </h1>
+    <main>
+    <hr style="margin: 20px 20px 40px 20px">
+      <h3>Description</h3>
+      <ul>
+        <li><strong>Project name: </strong>apitest</li>
+        <li><strong>Request URL: </strong><code>/api/issues/{projectname}</code></li>
+        <li><strong>To submit issue: </strong>POST request to project URL</li>
+        <li><strong>To get issue(s): </strong>GET request to project URL</li>
+        <li><strong>To update issue(s): </strong>PUT request to project URL</li>
+        <li><strong>To delete issue: </strong>DELETE request to project URL</li>
+        
+      </ul>
+      <div class="forms-div">
+        
+        <form id="testForm" class="border">
+          <p class="bold">
+            Submit issue
+          </p>
+          <input type="text" name="issue_title" placeholder="* Issue Title" required>
+          <textarea type="text" name="issue_text" placeholder="* Issue Text" required></textarea>
+          <input type="text" name="created_by" placeholder="* Created by" required>
+          <input type="text" name="assigned_to" placeholder="Assigned to">
+          <input type="text" name="status_text" placeholder="Status text">
+          <button type="submit">Submit Issue</button>
+        </form>
+
+        <form id="testForm2" class="border">
+          <p class="bold">
+            Edit issue on <i>apitest</i>
+          </p>
+          <input type="text" name="_id" placeholder="* _id" required>
+          <input type="text" name="issue_title" placeholder="Title">
+          <textarea type="text" name="issue_text" placeholder="Text"></textarea>
+          <input type="text" name="created_by" placeholder="Created by">
+          <input type="text" name="assigned_to" placeholder="Assigned to">
+          <input type="text" name="status_text" placeholder="Status text">
+          <label><input type="checkbox" name="open" value="false"> Check to close issue</label>
+          <button type="submit">Submit Issue</button>
+        </form>
+        
+        <form id="testForm3" class="border">
+          <p class="bold">
+            Delete issue on <i>apitest</i>
+          </p>
+          <input type="text" name="_id" placeholder="* _id" required>
+          <button type="submit">Delete Issue</button>
+        </form>
+        <code id="jsonResult"></code>
+      </div>
+    </main>
+    
+    <footer>
+      Made with 💙 and <a href="https://glitch.com">Glitch</a>!
+    </footer>
+    
+    <script>
+        const forms = document.querySelectorAll('form')
+        const out = document.querySelector('#jsonResult')
+        
+        
+        forms[0].addEventListener('submit', e => {
+          fetch('/api/issues/apitest', {
+            method: 'post',
+            body: new URLSearchParams(new FormData(forms[0]))
+          })
+          .then(res => res.json())
+          .then(data => {
+            out.textContent = JSON.stringify(data)
+          })
+          e.preventDefault()
+        })
+        
+        
+        forms[1].addEventListener('submit', e => {
+          fetch('/api/issues/apitest', {
+            method: 'put',
+            body: new URLSearchParams(new FormData(forms[1]))
+          })
+          .then(res => res.json())
+          .then(data  => {
+            out.textContent = JSON.stringify(data)
+          })
+          e.preventDefault()
+        })
+        
+        
+        forms[2].addEventListener('submit', e => {
+          fetch('/api/issues/apitest', {
+            method: 'delete',
+            body: new URLSearchParams(new FormData(forms[2]))
+          })
+          .then(res => res.json())
+          .then(data => {
+            out.textContent = JSON.stringify(data)
+          })
+          e.preventDefault()
+        })
+   </script>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+  margin: 2em;
+  background-color: #47363C;
+}
+
+h1 {
+  font-style: italic;
+  color: #31dbb5;
+}
+
+.bold {
+  font-weight: bold;
+}
+main, main a{
+  color: #a69ea0;
+}
+.center-contain{
+  text-align: center;
+}
+p {
+  max-width: 600px;
+}
+main > p{
+  color: #F4DB9D;
+}
+main .forms-div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+form {
+  margin: 15px;
+  padding: 15px;
+  background-color: #6b5e62;
+  display: inline-block;
+  width: 100%;
+  max-width: 340px;
+  border-radius: 3px;
+}
+form > p{
+  color: #000;
+}
+
+input[type="text"], textarea {
+  display: block;
+  margin-bottom: 10px;
+  padding: 7px;
+  width: 100%;
+  background-color: #31252a;
+  border: 0;
+  border-radius: 3px;
+  font-size: 16px;
+  resize: none;
+}
+label {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+button {
+  font-size: 16px;
+  border-radius: 3px;
+  background-color: lightgrey;
+  border: 1px solid grey;
+  box-shadow: 2px 2px teal;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: yellow;
+}
+
+button:active {
+  box-shadow: none;
+}
+
+footer {
+  margin-top: 50px;
+  padding-top: 25px;
+  border-top: 1px solid lightgrey;
+  color: #31dbb5;
+}
+footer a{
+  color: #31dbb5;
+  font-style: bold;
+}
+#issueDisplay{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.issue {
+  margin: 20px;
+  padding: 5px;
+  width: 60%;
+  border: 2px solid black;
+}
+.issue .status {
+  font-size: 0.8em;
+}
+.closed {
+  background-color: lightgrey;
+}
+
+.open .status{
+  color: #0FE670;
+}
+
+.closed .status{
+  color: #DE3038;
+}
+
+.id {
+  font-size: 10.5px;
+}
